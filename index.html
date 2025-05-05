@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR Check-In</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #f2f2f2;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 0 auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      background-color: #fff;
+    }
+
+    #result, #error {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      text-align: center;
+      padding: 10px 20px;
+      max-width: 90%;
+      word-wrap: break-word;
+    }
+
+    #result {
+      color: #2e7d32;
+      background-color: #e8f5e9;
+      border-radius: 8px;
+    }
+
+    #error {
+      color: #c62828;
+      background-color: #ffebee;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Scan Guest QR Code</h1>
+  <div id="reader"></div>
+  <div id="result"></div>
+  <div id="error"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventId = urlParams.get("eventId");
+
+    if (!eventId) {
+      document.getElementById('error').innerText = "Missing eventId in URL.";
+      throw new Error("Missing eventId");
+    }
+
+    function onScanSuccess(qrCodeMessage) {
+      document.getElementById('result').innerText = "Checking in guest...";
+      document.getElementById('error').innerText = "";
+
+      fetch("https://your-wix-site.com/_functions/check-in", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          qrData: qrCodeMessage,
+          eventId: eventId
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('result').innerText = data.message;
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('result').innerText = "";
+        document.getElementById('error').innerText = "Check-in failed.";
+      });
+    }
+
+    const html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      onScanSuccess
+    ).catch(err => {
+      console.error("Camera start error:", err);
+      document.getElementById('error').innerText = "Unable to access camera.";
+    });
+  </script>
+
+</body>
+</html>
