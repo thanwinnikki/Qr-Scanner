@@ -6,11 +6,20 @@
   <title>QR Check-In</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
+    /* Color Palette */
+    :root {
+      --primary-color: #1a1a1a; /* Dark background */
+      --secondary-color: #ffffff; /* White text */
+      --accent-color: #ffcc00; /* Accent color */
+      --error-color: #ff4d4f; /* Error color */
+      --success-color: #52c41a; /* Success color */
+    }
+
     body {
       margin: 0;
-      font-family: sans-serif;
-      background-color: #f2f2f2;
-      color: #333;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -20,8 +29,9 @@
     }
 
     h1 {
-      font-size: 1.8rem;
-      margin-bottom: 10px;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: var(--accent-color);
     }
 
     #reader {
@@ -42,18 +52,23 @@
       padding: 10px 20px;
       max-width: 90%;
       word-wrap: break-word;
+      border-radius: 8px;
     }
 
     #result {
-      color: #2e7d32;
-      background-color: #e8f5e9;
-      border-radius: 8px;
+      background-color: var(--success-color);
+      color: #fff;
     }
 
     #error {
-      color: #c62828;
-      background-color: #ffebee;
-      border-radius: 8px;
+      background-color: var(--error-color);
+      color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
     }
   </style>
 </head>
@@ -61,23 +76,28 @@
 
   <h1>Scan Guest QR Code</h1>
   <div id="reader"></div>
-  <div id="result"></div>
-  <div id="error"></div>
+  <div id="result" style="display:none;"></div>
+  <div id="error" style="display:none;"></div>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const eventId = urlParams.get("eventId");
 
     if (!eventId) {
-      document.getElementById('error').innerText = "Missing eventId in URL.";
+      const errorDiv = document.getElementById('error');
+      errorDiv.innerText = "Missing eventId in URL.";
+      errorDiv.style.display = "block";
       throw new Error("Missing eventId");
     }
 
     function onScanSuccess(qrCodeMessage) {
-      document.getElementById('result').innerText = "Checking in guest...";
-      document.getElementById('error').innerText = "";
+      const resultDiv = document.getElementById('result');
+      const errorDiv = document.getElementById('error');
+      resultDiv.innerText = "Checking in guest...";
+      resultDiv.style.display = "block";
+      errorDiv.style.display = "none";
 
-      fetch("https://your-wix-site.com/_functions/check-in", {
+      fetch("https://www.patriotsgplatform.com/_functions/check-in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -87,12 +107,15 @@
       })
       .then(res => res.json())
       .then(data => {
-        document.getElementById('result').innerText = data.message;
+        resultDiv.innerText = data.message;
+        resultDiv.style.display = "block";
+        errorDiv.style.display = "none";
       })
       .catch(err => {
         console.error(err);
-        document.getElementById('result').innerText = "";
-        document.getElementById('error').innerText = "Check-in failed.";
+        resultDiv.style.display = "none";
+        errorDiv.innerText = "Check-in failed.";
+        errorDiv.style.display = "block";
       });
     }
 
@@ -103,7 +126,9 @@
       onScanSuccess
     ).catch(err => {
       console.error("Camera start error:", err);
-      document.getElementById('error').innerText = "Unable to access camera.";
+      const errorDiv = document.getElementById('error');
+      errorDiv.innerText = "Unable to access camera.";
+      errorDiv.style.display = "block";
     });
   </script>
 
