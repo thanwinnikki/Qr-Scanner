@@ -45,20 +45,6 @@
       background-color: #fff;
     }
 
-    /* Force square camera feed container */
-    #reader > div {
-      position: relative !important;
-      padding-top: 100% !important; /* 1:1 Aspect Ratio */
-    }
-
-    #reader video {
-      position: absolute !important;
-      top: 0; left: 0;
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: cover;
-    }
-
     #result, #error {
       margin-top: 20px;
       font-size: 1.2rem;
@@ -137,7 +123,9 @@
     const html5QrCode = new Html5Qrcode("reader");
     html5QrCode.start(
       { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 250, height: 250 } },
+      { fps: 10, qrbox: { width: 250, height: 250 },
+        aspectRatio: 1.0
+    },
       onScanSuccess
     ).catch(err => {
       console.error("Camera start error:", err);
