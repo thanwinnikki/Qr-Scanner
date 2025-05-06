@@ -45,6 +45,20 @@
       background-color: #fff;
     }
 
+    /* Force square camera feed container */
+    #reader > div {
+      position: relative !important;
+      padding-top: 100% !important; /* 1:1 Aspect Ratio */
+    }
+
+    #reader video {
+      position: absolute !important;
+      top: 0; left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover;
+    }
+
     #result, #error {
       margin-top: 20px;
       font-size: 1.2rem;
