@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QR Check-In</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
   <style>
     /* Color Palette */
     :root {
@@ -64,7 +65,7 @@
       background-color: var(--error-color);
       color: #fff;
     }
-    
+
     #logo {
       max-width: 200px;
       height: auto;
@@ -73,14 +74,19 @@
 
     @media (max-width: 600px) {
       h1 {
+        font-family: 'Oswald', sans-serif;
         font-size: 1.5rem;
       }
-    }
+      .tagline {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 1.2rem;
+      }
+    }    
   </style>
 </head>
 <body>
   <img src="assets\PatriotSG_Logo-colour-light.avif" alt="Logo" id="logo" />
-  <h1>Scan Guest QR Code</h1>
+  <h1 class="tagline">Scan Guest QR Code</h1>
   <div id="reader"></div>
   <div id="result" style="display:none;"></div>
   <div id="error" style="display:none;"></div>
