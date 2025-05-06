@@ -96,14 +96,16 @@
       resultDiv.innerText = "Checking in guest...";
       resultDiv.style.display = "block";
       errorDiv.style.display = "none";
+      const body = JSON.stringify({
+          qrData: "Hello World",
+          eventId: "eventId"
+        })
+      console.log("Body: ", body);
 
       fetch("https://www.patriotsgplatform.com/_functions/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          qrData: qrCodeMessage,
-          eventId: eventId
-        })
+        body: body
       })
       .then(res => res.json())
       .then(data => {
