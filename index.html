@@ -108,9 +108,16 @@
       })
       .then(res => res.json())
       .then(data => {
-        resultDiv.innerText = data.message;
-        resultDiv.style.display = "block";
-        errorDiv.style.display = "none";
+        if (data.error) {
+          console.error(err);
+          resultDiv.style.display = "none";
+          errorDiv.innerText = "Check-in failed.";
+          errorDiv.style.display = "block";
+        } else {
+          resultDiv.innerText = data.message;
+          resultDiv.style.display = "block";
+          errorDiv.style.display = "none";
+        }
       })
       .catch(err => {
         console.error(err);
