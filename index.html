@@ -35,6 +35,18 @@
       color: var(--accent-color);
     }
 
+    #scanner-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 0 auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      background-color: #fff;
+    }
+
     #reader {
       width: 100%;
       max-width: 400px;
@@ -44,6 +56,22 @@
       margin: 0 auto;
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
       background-color: #fff;
+    }
+
+    #scanner-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      display: none;
     }
 
     #result, #error {
@@ -88,7 +116,10 @@
 <body>
   <img src="assets\PatriotSG_Logo-colour-light.avif" alt="Logo" id="logo" />
   <h1 class="tagline">Scan Guest QR Code</h1>
-  <div id="reader"></div>
+  <div id="scanner-wrapper">
+    <div id="reader"></div>
+    <div id="scanner-overlay">Please wait...</div>
+  </div>
   <div id="result" style="display:none;"></div>
   <div id="error" style="display:none;"></div>
 
@@ -103,7 +134,12 @@
       throw new Error("Missing eventId");
     }
 
+    let scanLocked = false;
+
     function onScanSuccess(qrCodeMessage) {
+      if (scanLocked) {
+        return;
+      }
       const resultDiv = document.getElementById('result');
       const errorDiv = document.getElementById('error');
       resultDiv.innerText = "Checking in guest...";
@@ -160,6 +196,13 @@
         resultDiv.style.display = "none";
         errorDiv.innerText = "Check-in failed due to a network error.";
         errorDiv.style.display = "block";
+      })
+      .finally(() => {
+        setTimeout(() => {
+          scanLocked = false;
+          overlay.style.display = "none";
+          console.log("Scanner unlocked");
+        }, 5000);
       });
     }
 
