@@ -114,7 +114,7 @@
   </style>
 </head>
 <body>
-  <img src="assets\PatriotSG_Logo-colour-light.avif" alt="Logo" id="logo" />
+  <img src="assets/PatriotSG_Logo-colour-light.avif" alt="Logo" id="logo" />
   <h1 class="tagline">Scan Guest QR Code</h1>
   <div id="scanner-wrapper">
     <div id="reader"></div>
@@ -140,6 +140,11 @@
       if (scanLocked) {
         return;
       }
+
+      const overlay = document.getElementById('scanner-overlay');
+      scanLocked = true;
+      overlay.style.display = "flex";
+
       const resultDiv = document.getElementById('result');
       const errorDiv = document.getElementById('error');
       resultDiv.innerText = "Checking in guest...";
@@ -159,11 +164,7 @@
 
       const scannedEventId = match[2];
 
-      // Get eventId from the page URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const pageEventId = urlParams.get("eventId");
-
-      if (scannedEventId !== pageEventId) {
+      if (scannedEventId !== eventId) {
         resultDiv.style.display = "none";
         errorDiv.innerText = "This QR code is for a different event.";
         errorDiv.style.display = "block";
