@@ -159,6 +159,8 @@
         resultDiv.style.display = "none";
         errorDiv.innerText = "Invalid QR code format.";
         errorDiv.style.display = "block";
+        overlay.style.display = "none";
+        scanLocked = false;       
         return;
       }
 
@@ -168,6 +170,8 @@
         resultDiv.style.display = "none";
         errorDiv.innerText = "This QR code is for a different event.";
         errorDiv.style.display = "block";
+        overlay.style.display = "none";
+        scanLocked = false;    
         return;
       }
 
